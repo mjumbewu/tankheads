@@ -94,14 +94,14 @@ class Sprite {
     };
   }
 
-  startMoving(amount) {
-    this.moveAmount = amount;
+  startMoving(speed) {
+    this.moveSpeed = speed;
 
     if (!this.movingTimer) {
       this.movingTimer = setInterval(() => {
        let dir = this.direction;
-       this.x += dir[0] * this.moveAmount;
-       this.y += dir[1] * this.moveAmount;
+       this.x += dir[0] * this.moveSpeed;
+       this.y += dir[1] * this.moveSpeed;
        }, 50);
      }
    }
@@ -111,8 +111,8 @@ class Sprite {
      return [Math.cos(angle), Math.sin(angle)]
    }
 
-   startRotating(amount) {
-     this.rotateAmount = amount;
+   startRotating(speed) {
+     this.rotateSpeed = speed;
 
      if (!this.rotatingTimer) {
        this.rotatingTimer = setInterval(() => {
@@ -120,9 +120,9 @@ class Sprite {
          let angle = this.angle;
 
          // Add a degree (PI / 180 rad) to the angle
-         angle += (Math.PI / 180.0) * this.rotateAmount;
+         angle += (Math.PI / 180.0) * this.rotateSpeed;
 
-         // Ensure that we always have a rotation amount between 0 and 360
+         // Ensure that we always have a rotation speed between 0 and 360
          while (angle < 0) { angle += 2 * Math.PI; }
          angle %= 2 * Math.PI;
 
@@ -209,14 +209,14 @@ class Head extends Sprite {
     });
   }
 
-  startMoving(amount) {
-    this.moveAmount = amount;
+  startMoving(speed) {
+    this.moveSpeed = speed;
 
     if (!this.movingTimer) {
       this.movingTimer = setInterval(() => {
        let dir = this.direction;
-       this.x += dir[0] * this.moveAmount;
-       this.y += dir[1] * this.moveAmount;
+       this.x += dir[0] * this.moveSpeed;
+       this.y += dir[1] * this.moveSpeed;
        }, 50);
      }
    }
