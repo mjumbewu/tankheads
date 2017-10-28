@@ -42,6 +42,7 @@ class GameCanvas {
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     for (const sprite of this.sprites) {
+      sprite.step();
       sprite.draw(ctx);
     }
   }
@@ -79,8 +80,8 @@ class Sprite {
     this.angle = options.angle || 0;
     this.direction = this.calcDirFromAngle();
 
-    this.movingTimer = null;
-    this.rotatingTimer = null;
+    this.moveSpeed = null;
+    this.rotateSpeed = null;
 
     this.imgLoaded = false;
     this.img.onload = () => {
@@ -95,63 +96,59 @@ class Sprite {
     };
   }
 
+  calcDirFromAngle(angle=null) {
+    if (angle === null) { angle = this.angle; }
+    return [Math.cos(angle), Math.sin(angle)]
+  }
+
   startMoving(speed) {
     this.moveSpeed = speed;
-
-    if (!this.movingTimer) {
-      this.movingTimer = setInterval(() => {
-       let dir = this.direction;
-       this.x += dir[0] * this.moveSpeed;
-       this.y += dir[1] * this.moveSpeed;
-       }, 50);
-     }
-   }
-
-   calcDirFromAngle(angle=null) {
-     if (angle === null) { angle = this.angle; }
-     return [Math.cos(angle), Math.sin(angle)]
    }
 
    startRotating(speed) {
      this.rotateSpeed = speed;
-
-     if (!this.rotatingTimer) {
-       this.rotatingTimer = setInterval(() => {
-         let dir;
-         let angle = this.angle;
-
-         // Add a degree (PI / 180 rad) to the angle
-         angle += (Math.PI / 180.0) * this.rotateSpeed;
-
-         // Ensure that we always have a rotation speed between 0 and 360
-         while (angle < 0) { angle += 2 * Math.PI; }
-         angle %= 2 * Math.PI;
-
-         // Calculate a new normal vector based on the angle
-         dir = this.calcDirFromAngle(angle);
-
-         this.angle = angle
-         this.direction = dir;
-       });
-    }
   }
 
   stopMoving() {
-    clearInterval(this.movingTimer);
-    this.movingTimer = null;
+    this.moveSpeed = null;
   }
 
   stopRotating() {
-    clearInterval(this.rotatingTimer);
-    this.rotatingTimer = null;
+    this.rotateSpeed = null;
   }
 
   isMoving() {
-    return this.movingTimer !== null;
+    return this.moveSpeed !== null;
   }
 
   isRotating() {
-    return this.rotatingTimer !== null;
+    return this.rotateSpeed !== null;
+  }
+
+  step() {
+    if (this.isRotating()) {
+      let dir;
+      let angle = this.angle;
+
+      // Add a degree (PI / 180 rad) to the angle
+      angle += (Math.PI / 180.0) * this.rotateSpeed;
+
+      // Ensure that we always have a rotation speed between 0 and 360
+      while (angle < 0) { angle += 2 * Math.PI; }
+      angle %= 2 * Math.PI;
+
+      // Calculate a new normal vector based on the angle
+      dir = this.calcDirFromAngle(angle);
+
+      this.angle = angle
+      this.direction = dir;
+    }
+
+    if (this.isMoving()) {
+      let dir = this.direction;
+      this.x += dir[0] * this.moveSpeed;
+      this.y += dir[1] * this.moveSpeed;
+    }
   }
 
   draw(ctx) {
