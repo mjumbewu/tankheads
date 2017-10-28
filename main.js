@@ -32,6 +32,7 @@ class GameCanvas {
     // Get the canvas element that everything will be drawn on.
     this.canvas = document.getElementById(canvasId);
 
+    // Redraw the game every 50 miliseconds (20 times per second)
     this.drawinterval = setInterval(() => { this.draw(); }, 50);
   }
 
@@ -236,7 +237,10 @@ class Head extends Sprite {
       });
       p.startMoving(3)
 
+      // Disallow launching again for 1 sec (1000 miliseconds)
       setTimeout(() => { this.canLaunch = true; }, 1000);
+
+      // Set the projectile to disappear after 7 sec (7000 miliseconds)
       setTimeout(() => { this.game.removeSprite(p); }, 7000);
 
       this.game.addSprite(p, 0);
